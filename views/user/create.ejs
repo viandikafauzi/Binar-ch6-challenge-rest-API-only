@@ -1,0 +1,20 @@
+<html>
+  <head>
+    <title>Articles | Create</title>
+  </head>
+  <body>
+    <h1>Create user page</h1>
+    <form method="POST" action="/api/user">
+      <label for="username">New username</label>
+      <br />
+      <input type="text" name="username" />
+      <br />
+      <label for="password">New password</label>
+      <br />
+      <input type="password" name="password" />
+      <br />
+      <button type="submit">Create User</button>
+    </form>
+    <button onclick="document.location='/dashboard'">Back to dashboard</button>
+  </body>
+</html>

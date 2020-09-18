@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>User dashboard</title>
+  </head>
+  <body>
+    <h1>You are in user dashboard</h1>
+    <button onclick="document.location='/dashboard'">Back to dashboard</button>
+    <br />
+    <br />
+    <table style="border: 1px solid black">
+      <tr>
+        <th>User-ID</th>
+        <th>Username</th>
+        <th>Password</th>
+      </tr>
+      <% console.log(typeof data) %>
+      <% console.log(data.length) %>
+      <% for (var i=0; i<data.length ; i++) { %>
+        <tr>
+          <th><%= data[i].id %></th>
+          <th><%= data[i].username %></th>
+          <th><%= data[i].password %></th>
+        </tr>
+      <% } %>
+    </table>
+  </body>
+</html>

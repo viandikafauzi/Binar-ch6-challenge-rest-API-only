@@ -7,8 +7,14 @@ const { route } = require("./profile-route");
 router.get("/", (req, res) => {
   db.User.findAll({
     include: [db.Profile, db.History],
+    order: ["createdAt"],
   })
-    .then((allUser) => res.send(allUser))
+    .then((allUser) => {
+      console.log("input are in");
+      // res.json(allUser);
+      res.render("user/view", { data: allUser });
+    })
+    // .then((allUser) => res.render("user/view", allUser))
     .catch((err) => res.status(400).json({ msg: err.message }));
 });
 
@@ -35,7 +41,8 @@ router.post("/", (req, res) => {
     username: req.body.username,
     password: req.body.password,
   })
-    .then((newUser) => res.send(newUser))
+    // .then((newUser) => res.send(newUser))
+    .then(res.render("success"))
     .catch((err) => res.status(400).json({ msg: err.message }));
 });
 
@@ -50,12 +57,9 @@ router.put("/:id", (req, res) => {
         res.status(404).json({ msg: "No user defined!" });
       }
 
-      if (req.body.username) {
-        modifiedUser.username = req.body.username;
-      }
-      if (req.body.password) {
-        modifiedUser.password = req.body.password;
-      }
+      modifiedUser.username = req.body.username || req.body.username;
+      modifiedUser.password = req.body.password || req.body.password;
+
       modifiedUser
         .save()
         .then(res.send(modifiedUser))
