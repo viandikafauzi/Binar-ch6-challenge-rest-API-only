@@ -11,6 +11,7 @@ app.use(express.json());
 app.use("/api/user", require("./routes/api/user-route"));
 app.use("/api/profile", require("./routes/api/profile-route"));
 app.use("/api/history", require("./routes/api/history-route"));
+
 app.get("/", (req, res) => {
   res.send("default page");
 });

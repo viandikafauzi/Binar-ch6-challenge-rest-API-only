@@ -2,7 +2,6 @@ const express = require("express");
 const router = express.Router();
 const db = require("./../../models");
 const { v4: uuidv4 } = require("uuid");
-const { route } = require("./profile-route");
 
 router.get("/", (req, res) => {
   db.User.findAll({
@@ -16,7 +15,6 @@ router.get("/:id", (req, res) => {
   db.User.findOne({
     where: {
       id: req.params.id,
-      include: [db.Profile, db.History],
     },
   })
     .then((selectedUser) => {
@@ -50,12 +48,9 @@ router.put("/:id", (req, res) => {
         res.status(404).json({ msg: "No user defined!" });
       }
 
-      if (req.body.username) {
-        modifiedUser.username = req.body.username;
-      }
-      if (req.body.password) {
-        modifiedUser.password = req.body.password;
-      }
+      modifiedUser.username = modifiedUser.username || req.body.username;
+      modifiedUser.password = req.body.password || modifiedUser.password;
+
       modifiedUser
         .save()
         .then(res.send(modifiedUser))

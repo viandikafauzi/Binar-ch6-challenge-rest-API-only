@@ -4,9 +4,7 @@ const db = require("./../../models");
 const { v4: uuidv4 } = require("uuid");
 
 router.get("/", (req, res) => {
-  db.History.findAll({
-    include: [db.User],
-  })
+  db.History.findAll()
     .then((allHistory) => res.send(allHistory))
     .catch((err) => res.status(400).json({ msg: err.message }));
 });
@@ -15,7 +13,6 @@ router.get("/:id", (req, res) => {
   db.History.findOne({
     where: {
       id: req.params.id,
-      include: [db.User],
     },
   })
     .then((selectedHistory) => {
@@ -33,6 +30,7 @@ router.post("/", (req, res) => {
     where: {
       id: req.body.UserId,
     },
+    include: [db.History],
   })
     .then((selectedUser) => {
       db.History.create({
@@ -43,34 +41,7 @@ router.post("/", (req, res) => {
         UserId: req.body.UserId,
       })
         .then((newHistory) => res.send(newHistory))
-        .catch((err) => res.status(400).json({ msg: err.message }));
-    })
-    .catch((err) => res.status(400).json({ msg: err.message }));
-});
-
-router.put("/:id", (req, res) => {
-  db.History.findOne({
-    where: {
-      id: req.params.id,
-    },
-  })
-    .then((modifiedUser) => {
-      if (!modifiedUser) {
-        res.status(400).json({ msg: "No History defined!" });
-      }
-
-      if (req.body.fullname) {
-        modifiedUser.fullname = req.body.fullname;
-      }
-      if (req.body.about) {
-        modifiedUser.about = req.body.about;
-      }
-      modifiedUser
-        .save()
-        .then(res.send(modifiedUser))
-        .catch((err) =>
-          res.status(400).json({ msg: "Error updating History!" })
-        );
+        .catch((err) => res.status(500).json({ msg: err.message }));
     })
     .catch((err) => res.status(400).json({ msg: err.message }));
 });
@@ -88,7 +59,7 @@ router.delete("/:id", (req, res) => {
       deletedHistory
         .destroy()
         .then(res.json({ msg: "History successfully deleted" }))
-        .catch((e) => res.status(400).json({ msg: e.message }));
+        .catch((e) => res.status(500).json({ msg: e.message }));
     })
     .catch((err) => res.status(400).json({ msg: err.message }));
 });

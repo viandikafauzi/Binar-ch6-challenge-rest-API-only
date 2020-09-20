@@ -4,9 +4,7 @@ const db = require("./../../models");
 const { v4: uuidv4 } = require("uuid");
 
 router.get("/", (req, res) => {
-  db.Profile.findAll({
-    include: [db.User],
-  })
+  db.Profile.findAll()
     .then((allProfile) => res.send(allProfile))
     .catch((err) => res.status(400).json({ msg: err.message }));
 });
@@ -15,7 +13,6 @@ router.get("/:id", (req, res) => {
   db.Profile.findOne({
     where: {
       id: req.params.id,
-      include: [db.User],
     },
   })
     .then((selectedProfile) => {
@@ -33,11 +30,9 @@ router.post("/", (req, res) => {
     where: {
       id: req.body.UserId,
     },
+    include: [db.Profile],
   })
     .then((selectedUser) => {
-      if (!selectedUser) {
-        res.status(404).json({ msg: "User does not exist!" });
-      }
       if (selectedUser.Profile === null || selectedUser.Profile === undefined) {
         db.Profile.create({
           id: uuidv4(),
@@ -46,9 +41,9 @@ router.post("/", (req, res) => {
           UserId: req.body.UserId,
         })
           .then((newProfile) => res.send(newProfile))
-          .catch((err) => res.status(400).json({ msg: err.message }));
+          .catch((err) => res.status(500).json({ msg: err.message }));
       } else {
-        res.status(400).json({ msg: "Profile already exist!" });
+        res.status(403).json({ msg: "Profile already exist!" });
       }
     })
     .catch((err) => res.status(400).json({ msg: err.message }));
@@ -60,23 +55,18 @@ router.put("/:id", (req, res) => {
       id: req.params.id,
     },
   })
-    .then((modifiedUser) => {
-      if (!modifiedUser) {
+    .then((modifiedProfile) => {
+      if (!modifiedProfile) {
         res.status(400).json({ msg: "No profile defined!" });
       }
 
-      if (req.body.fullname) {
-        modifiedUser.fullname = req.body.fullname;
-      }
-      if (req.body.about) {
-        modifiedUser.about = req.body.about;
-      }
-      modifiedUser
+      modifiedProfile.fullname = req.body.fullname || modifiedProfile.fullname;
+      modifiedProfile.about = req.body.about || modifiedProfile.about;
+
+      modifiedProfile
         .save()
-        .then(res.send(modifiedUser))
-        .catch((err) =>
-          res.status(400).json({ msg: "Error updating profile!" })
-        );
+        .then(res.send(modifiedProfile))
+        .catch((err) => res.status(500).json({ msg: err.message }));
     })
     .catch((err) => res.status(400).json({ msg: err.message }));
 });
@@ -94,7 +84,7 @@ router.delete("/:id", (req, res) => {
       deletedProfile
         .destroy()
         .then(res.json({ msg: "Profile successfully deleted" }))
-        .catch((e) => res.status(400).json({ msg: e.message }));
+        .catch((e) => res.status(500).json({ msg: e.message }));
     })
     .catch((err) => res.status(400).json({ msg: err.message }));
 });
