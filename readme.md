@@ -1,5 +1,7 @@
 # Full REST API implementation with Express, PostgreSQL, and Sequelize
 
+Make sure you `remove all the tables` if you use dashboard version or vice versa!
+
 ### Installation
 
 Require [Node.js](https://nodejs.org/) and PostgreSQL to run.
