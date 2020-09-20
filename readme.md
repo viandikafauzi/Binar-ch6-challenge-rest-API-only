@@ -24,4 +24,4 @@ Make sure to edit **config.json** file located in /config folder. Server need to
 
 ### Postman Collection
 
-You can see [here](https://www.getpostman.com/collections/d149c06da03a2591abf8) for a full collection of this API
+You can see [here](https://documenter.getpostman.com/view/12309498/TVKBZJJM) for a full collection of this API
